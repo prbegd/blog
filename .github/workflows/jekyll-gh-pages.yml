@@ -30,15 +30,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Install bundle dependencies
+      - name: Build with Jekyll
         run: |
           sudo gem update bundler
           sudo bundle install
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
+          jekyll build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
