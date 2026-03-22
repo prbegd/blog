@@ -1,0 +1,160 @@
+<div id="particles-background">
+    <style>
+        #particles-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <script>
+        (function () {
+            const navbar = document.querySelector('.navbar');
+            const particlesBackground = document.querySelector('#particles-background');
+            if (navbar && particlesBackground) {
+                const refBottom = navbar.getBoundingClientRect().bottom;
+                particlesBackground.style.top = `${refBottom}px`;
+                particlesBackground.style.height = `calc(100vh - ${refBottom}px)`;
+            }
+        })();
+        (async function () {
+            const container = await tsParticles.load({
+                id: "particles-background",
+                options: {
+                    background: {
+                        color: "#000000"
+                    },
+                    fullScreen: {
+                        enable: false
+                    },
+                    fpsLimit: 60,
+                    detectRetina: true,
+                    particles: {
+                        number: {
+                            value: (function () {
+                                const divContainer = document.getElementById("particles-background");
+                                return divContainer.clientWidth * divContainer.clientHeight / 10000;
+                            })(),
+                            limit: 100
+                        },
+                        color: {
+                            value: "#ffffff"
+                        },
+                        shape: {
+                            type: "circle"
+                        },
+                        opacity: {
+                            value: 1,
+                            animation: {
+                                enable: false
+                            }
+                        },
+                        size: {
+                            value: { min: 0.5, max: 3 },
+                            random: true,
+                            animation: {
+                                enable: true,
+                                speed: 2.5,
+                                size_min: 1.5,
+                                sync: false
+                            }
+                        },
+                        links: {
+                            enable: true,
+                            distance: 160,
+                            color: "#ffffff",
+                            opacity: 0.45,
+                            width: 1.2,
+                            warp: false
+                        },
+                        move: {
+                            enable: true,
+                            speed: 1,
+                            direction: "none",
+                            random: true,
+                            straight: false,
+                            outModes: {
+                                default: "out"
+                            },
+                            warp: true,
+                            attract: {
+                                enable: false
+                            }
+                        }
+                    },
+                    interactivity: {
+                        detectsOn: "canvas",
+                        events: {
+                            onHover: {
+                                enable: true,
+                                mode: "grab"
+                            },
+                            onClick: {
+                                enable: false
+                            },
+                            resize: true
+                        },
+                        modes: {
+                            grab: {
+                                distance: 200,
+                                links: {
+                                    opacity: 0.65
+                                }
+                            }
+                        }
+                    },
+                    smooth: true
+                }
+            });
+
+            const MAX_PARTICLES = container.particles.count;
+            function pruneParticlesIfNeeded() {
+                if (!container.particles) return;
+
+                const currentCount = container.particles.count;
+                if (currentCount <= MAX_PARTICLES) return;
+
+                const toDeleteCount = currentCount - MAX_PARTICLES;
+
+                container.particles.removeQuantity(toDeleteCount);
+            }
+
+            const canvasElement = container.canvas.element;
+            if (!canvasElement) {
+                console.error("particles-background: Adding particles by clicking is not available because canvas is not ready.");
+                return;
+            }
+
+            const CLICK_THROTTLE_MS = 5000;
+            let lastClickTime = 0;
+            canvasElement.addEventListener("click", (e) => {
+                if (e.button !== 0) return;
+
+                const now = Date.now();
+                if (now - lastClickTime < CLICK_THROTTLE_MS) return;
+                lastClickTime = now;
+
+                const rect = canvasElement.getBoundingClientRect();
+                const scaleX = canvasElement.width / rect.width;
+                const scaleY = canvasElement.height / rect.height;
+                const mouseX = (e.clientX - rect.left) * scaleX;
+                const mouseY = (e.clientY - rect.top) * scaleY;
+
+                const newParticlesCount = Math.floor(Math.random() * 18) + 3;
+
+                for (let i = 0; i < newParticlesCount; i++) {
+                    const offsetX = (Math.random() - 0.5) * 20;
+                    const offsetY = (Math.random() - 0.5) * 20;
+                    container.particles.addParticle({
+                        x: mouseX + offsetX,
+                        y: mouseY + offsetY
+                    });
+                }
+
+                pruneParticlesIfNeeded();
+            });
+        })();
+    </script>
+</div>
