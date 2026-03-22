@@ -33,7 +33,7 @@ jobs:
       - name: Install bundle dependencies
         run: |
           sudo gem update bundler
-          bundle install
+          sudo bundle install
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
